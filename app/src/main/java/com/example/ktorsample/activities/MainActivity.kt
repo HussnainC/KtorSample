@@ -1,5 +1,6 @@
-package com.example.ktorsample
+package com.example.ktorsample.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ktorsample.adaptor.PostAdaptor
 import com.example.ktorsample.databinding.ActivityMainBinding
 import com.example.ktorsample.modelclass.DataClass
+import com.example.ktorsample.utils.Constants
 import com.example.ktorsample.utils.States
 import com.example.ktorsample.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindData(data: MutableList<DataClass>) {
-        mAdaptor.differList.submitList(data)
+        mAdaptor.differList.submitList(data as MutableList<*>)
         with(binding) {
             mProgress.visibility = View.GONE
             mRecycler.visibility = View.VISIBLE
@@ -74,6 +75,11 @@ class MainActivity : AppCompatActivity() {
         binding.mRecycler.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = mAdaptor
+        }
+        mAdaptor.onPostClick = {
+            startActivity(Intent(this, CommentsActivity::class.java).apply {
+                putExtra(Constants.POST_TAG, it)
+            })
         }
     }
 
